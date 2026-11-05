@@ -16,7 +16,8 @@ class MainWindow(QMainWindow):
     layout = QVBoxLayout(content)
 
     # adding the game folder selector up top
-    layout.addWidget(GameFolderSelector())
+    self.game_folder_selector = GameFolderSelector()
+    layout.addWidget(self.game_folder_selector)
 
     tabs = QTabWidget()
     for tab_title, view in views:

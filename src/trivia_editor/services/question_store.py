@@ -4,15 +4,21 @@ from pathlib import Path
 from trivia_editor.models.basic_question import Choice,Question
 
 class QuestionStore:
-  def load_questions(path: Path) -> list[Question]:
-    data = json.loads(path.read_text(encoding="utf-8"))
+  def __init__(self):
+    self.questions: list[Question] = []
 
-    return [
+  def load_questions(self, file_path: Path):
+    data = json.loads(file_path.read_text(encoding="utf-8"))
+
+    self.questions = [
       Question(
         id=item["id"],
         text=item["text"],
         choices=[
-            Choice(text=choice["text"], correct=choice["correct"])
+            Choice(
+              text=choice["text"],
+              correct=choice.get("correct", False)
+            )
             for choice in item["choices"]
         ],
         introAudio=item.get("introAudio"),
