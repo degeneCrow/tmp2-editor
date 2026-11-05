@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QMainWindow, QTabWidget, QVBoxLayout, QWidget
-from trivia_editor.views.questions_view import QuestionsView
+from trivia_editor.views.base_questions_view import BaseQuestionsView
 from trivia_editor.views.final_round_view import FinalRoundView
 from trivia_editor.views.components.game_folder_selector import GameFolderSelector
 
@@ -11,7 +11,7 @@ class MainWindow(QMainWindow):
     self.resize(1000, 500)
 
     tabs = QTabWidget()
-    tabs.addTab(QuestionsView(), "Base Game Questions")
+    tabs.addTab(BaseQuestionsView(), "Base Game Questions")
     tabs.addTab(FinalRoundView(), "Final Round")
 
     # adding the game folder selector up top
