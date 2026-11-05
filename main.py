@@ -4,11 +4,11 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from PySide6.QtWidgets import QApplication
-from trivia_editor.views.main_window import MainWindow
+from trivia_editor.app import AppController
 
 def main():
   app = QApplication(sys.argv)
-  window = MainWindow()
+  window = AppController()
   window.show()
   return app.exec()
 
