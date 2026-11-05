@@ -66,5 +66,6 @@ class BaseQuestionsView(QWidget):
 
   def display_questions(self, questions: list[Question]):
     self.placeholder.hide()
+    self.table.hide()
     self.refresh_questions(questions)
 

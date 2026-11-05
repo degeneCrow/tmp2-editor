@@ -15,11 +15,12 @@ class QuestionStore:
         id=item["id"],
         text=item["text"],
         choices=[
-            Choice(
-              text=choice["text"],
-              correct=choice.get("correct", False)
-            )
-            for choice in item["choices"]
+          Choice(
+            text=choice["text"],
+            # apparently later they decided to by default assume an option is incorrect???
+            correct=choice.get("correct", False)
+          )
+          for choice in item["choices"]
         ],
         introAudio=item.get("introAudio"),
         questionAudio=item.get("questionAudio"),
