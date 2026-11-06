@@ -16,7 +16,7 @@ class QuestionStore:
       number += 1
 
   def load_questions(self, file_path: Path):
-    create_backup(file_path)
+    # create_backup(file_path)
 
     data = json.loads(file_path.read_text(encoding="utf-8"))
 
