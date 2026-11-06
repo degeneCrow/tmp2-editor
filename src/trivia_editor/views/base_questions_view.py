@@ -24,6 +24,8 @@ class BaseQuestionsView(QWidget):
   s_load_custom = Signal(str)
   s_save_active = Signal()
   s_save_custom = Signal(str)
+  s_add_question = Signal()
+  s_del_question = Signal(int)
 
   TC_BUTTONS = [
     (
@@ -45,6 +47,16 @@ class BaseQuestionsView(QWidget):
       "Save as...",
       "Save the current question database with a custom name; useful for testing and iteration",
       "_choose_custom_db_to_save"
+    ),
+    (
+      "Add question",
+      "Insert a new row of questions at the end of the database",
+      "s_add_question"
+    ),
+    (
+      "Delete question",
+      "Remove the selected question from the database",
+      "_remove_selected_question"
     ),
   ]
 
@@ -85,26 +97,31 @@ class BaseQuestionsView(QWidget):
     # adding page to main layout
     self.pages.addWidget(self.content_page)
 
-
   def _refresh_questions(self, questions: list[Question]):
     self.table.setRowCount(0)
 
     for question in questions:
-      if len(question.choices) > 4:
-        raise ValueError(
-          f"Question {question.id} has {len(question.choices)} choices; expected max of 4."
-        )
+      # #the following should really be done by controller or store
+      # if len(question.choices) > 4:
+      #   raise ValueError(
+      #     f"Question {question.id} has {len(question.choices)} choices; expected max of 4."
+      #   )
 
-      # calculating temp id of "correct answer"; also allows to check that only 1 is correct
-      correct_positions = [
+      # calculating temp id of "correct answer"
+      correct_answers = [
         index + 1
         for index, choice in enumerate(question.choices)
         if choice.correct
       ]
-      if len(correct_positions) != 1:
-        raise ValueError(
-          f"Question {question.id} must have exactly one correct choice."
-        )
+      answer = str(correct_answers[0]) if correct_answers else "0"
+      #the following should really be done by controller or store
+      # if len(correct_answer) != 1:
+      #   raise ValueError(
+      #     f"Question {question.id} must have exactly one correct choice."
+      #   )
+
+      choices = [c.text for c in question.choices]
+      choices.extend([""] * (4 - len(choices)))
 
       row = self.table.rowCount()
       self.table.insertRow(row)
@@ -112,8 +129,8 @@ class BaseQuestionsView(QWidget):
       values = [
         question.id,
         question.text,
-        *(choice.text for choice in question.choices),
-        str(correct_positions[0]),
+        *choices,
+        answer,
       ]
 
       for column, value in enumerate(values):
@@ -149,3 +166,9 @@ class BaseQuestionsView(QWidget):
       if not path.lower().endswith(".jet"):
         path += ".jet"
       self.s_save_custom.emit(path)
+
+  def _remove_selected_question(self):
+    r_id = self.table.currentRow()
+    q_id_cell = self.table.item(r_id, 0)
+    q_id = int(q_id_cell.text()) # the ID of the question in the database
+    self.s_del_question.emit(q_id)

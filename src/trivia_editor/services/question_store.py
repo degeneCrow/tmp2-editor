@@ -68,3 +68,26 @@ class QuestionStore:
       encoding="utf-8",
     )
 
+  def add_question(self, answer_count:int):
+    next_id = max((q.id for q in self.questions), default=0) + 1
+
+    self.questions.append(
+      Question(
+        id=next_id,
+        text="",
+        choices=[
+          Choice(text="",correct=False) for _ in range(answer_count)
+        ],
+        introAudio="",
+        questionAudio="",
+        outro="",
+        us=False,
+        x=False
+      )
+    )
+
+  def del_question(self, question_id:int):
+    for i, q in enumerate(self.questions):
+      if q.id == question_id:
+        del self.questions[i]
+

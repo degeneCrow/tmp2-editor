@@ -7,7 +7,7 @@ class Choice:
 
 @dataclass
 class Question:
-  id: str
+  id: int
   # this is the question that is displayed
   text: str
   # no explanation needed

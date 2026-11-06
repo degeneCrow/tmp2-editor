@@ -19,6 +19,8 @@ class BaseQuestionsController:
     self._view.s_load_custom.connect(self.load_custom_questions)
     self._view.s_save_active.connect(self.save_questions)
     self._view.s_save_custom.connect(self.save_custom_questions)
+    self._view.s_del_question.connect(self.del_question)
+    self._view.s_add_question.connect(self.add_question)
 
   @property
   def view(self) -> Path | None:
@@ -60,3 +62,13 @@ class BaseQuestionsController:
     print("custom question saving called!")
     file_db_path = Path(custom_filepath)
     self.store.save_questions(file_db_path)
+
+  def add_question(self):
+    print("registering a new question row!")
+    self.store.add_question(4)
+    self.view._refresh_questions(self.store.questions)
+
+  def del_question(self, q_id : int):
+    print("deleting a question from db!")
+    self.store.del_question(q_id)
+    self.view._refresh_questions(self.store.questions)
