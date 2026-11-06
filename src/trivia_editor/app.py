@@ -8,14 +8,13 @@ from trivia_editor.views.main_window import MainWindow
 
 class AppController:
   def __init__(self):
-    self.game_path : Path = None
+    self.game_path : str = None
     self.base_questions = BaseQuestionsController(BaseQuestionsView(), QuestionStore())
 
     self.window = MainWindow(views=[
       ("Base Game Questions", self.base_questions.view),
       ("Final Round Questions", FinalRoundView()),
     ])
-
 
     self.window.game_folder_selector.folder_selected.connect(
       self.on_game_folder_selected
@@ -27,5 +26,6 @@ class AppController:
   def on_game_folder_selected(self):
     self.game_path = self.window.game_folder_selector.game_path()
     print(f"Selected game folder: {self.game_path}")
-
-    self.base_questions.load_questions(self.game_path)
+    # populate the controllers, and refresh them
+    self.base_questions.set_game_path(self.game_path)
+    self.base_questions.load_default_questions()

@@ -1,9 +1,10 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import(
   QLabel, QPushButton,
   QVBoxLayout, QHBoxLayout, QStackedLayout,
   QWidget,
-  QTableWidget, QTableWidgetItem
+  QTableWidget, QTableWidgetItem,
+  QFileDialog,
 )
 
 from trivia_editor.models.basic_question import Question,Choice
@@ -19,22 +20,31 @@ class BaseQuestionsView(QWidget):
     "Correct choice",
   ]
 
+  s_load_active = Signal()
+  s_load_custom = Signal(str)
+  s_save_active = Signal()
+  s_save_custom = Signal(str)
+
   TC_BUTTONS = [
     (
       "Load active question set",
       "Read the question database that the game would load if you ran it now",
+      "s_load_active"
     ),
     (
       "Load question set...",
       "Pick the question database to edit (make sure it's for the base game!)",
+      "_choose_custom_db_to_load"
     ),
     (
       "Save",
       "Save the current question database as the one the game would load if you ran it now",
+      "s_save_active"
     ),
     (
       "Save as...",
       "Save the current question database with a custom name; useful for testing and iteration",
+      "_choose_custom_db_to_save"
     ),
   ]
 
@@ -65,9 +75,10 @@ class BaseQuestionsView(QWidget):
     self.table_controls = QWidget()
     tc_layout = QVBoxLayout(self.table_controls)
     tc_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-    for text, tooltip in self.TC_BUTTONS:
+    for text, tooltip, signal_name in self.TC_BUTTONS:
       button = QPushButton(text)
       button.setToolTip(tooltip)
+      button.clicked.connect(getattr(self, signal_name))
       tc_layout.addWidget(button)
     c_layout.addWidget(self.table_controls)
 
@@ -75,7 +86,7 @@ class BaseQuestionsView(QWidget):
     self.pages.addWidget(self.content_page)
 
 
-  def refresh_questions(self, questions: list[Question]):
+  def _refresh_questions(self, questions: list[Question]):
     self.table.setRowCount(0)
 
     for question in questions:
@@ -111,8 +122,30 @@ class BaseQuestionsView(QWidget):
     self.table.resizeColumnsToContents()
     self.table.show()
 
-  def display_questions(self, questions: list[Question]):
+  def _display_questions(self, questions: list[Question]):
     self.pages.setCurrentWidget(self.placeholder_page)
-    self.refresh_questions(questions)
+    self._refresh_questions(questions)
     self.pages.setCurrentWidget(self.content_page)
 
+  def _choose_custom_db_to_load(self):
+    path, _ = QFileDialog.getOpenFileName(
+      self,
+      "Load question database",
+      "",
+      "Trivia Murder Party Question databases (*.jet);;All files (*)",
+    )
+    if path:  # Empty when cancelled
+      self.s_load_custom.emit(path)
+
+  def _choose_custom_db_to_save(self):
+    path, _ = QFileDialog.getSaveFileName(
+      self,
+      "Save question database",
+      "",
+      "Trivia Murder Party Question databases (*.jet)",
+    )
+    if path:  # Empty when cancelled
+      #making sure the right extension is set
+      if not path.lower().endswith(".jet"):
+        path += ".jet"
+      self.s_save_custom.emit(path)

@@ -40,3 +40,31 @@ class QuestionStore:
       )
       for item in data["content"]
     ]
+
+  def save_questions(self, file_path: Path):
+    data = { "content": [] }
+
+    for q in self.questions:
+      choices = []
+      for c in q.choices:
+        choices.append({
+          "text": c.text,
+          "correct": c.correct
+        })
+
+      data["content"].append({
+        "id": q.id,
+        "text": q.text,
+        "choices": choices,
+        "introAudio": q.introAudio,
+        "outro": q.outro,
+        "questionAudio": q.questionAudio,
+        "us": q.us,
+        "x": q.x,
+      })
+
+    file_path.write_text(
+      json.dumps(data, indent=4, ensure_ascii=False) + "\n",
+      encoding="utf-8",
+    )
+
