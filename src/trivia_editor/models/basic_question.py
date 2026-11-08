@@ -1,22 +1,22 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 @dataclass
 class Choice:
-  text: str
-  correct: bool
+  text: str = ""
+  correct: bool = False
 
 @dataclass
 class Question:
-  id: int
+  id: int = -1
   # this is the question that is displayed
-  text: str
+  text: str = ""
   # no explanation needed
-  choices: list[Choice]
+  choices: list[Choice] = field(default_factory=list)
   # the following 3 are for in-game subtitles i think?
   # maybe also a check on if there is an intro/outro to play?
-  introAudio: str | None = None
-  questionAudio: str | None = None
-  outro: str | None = None
+  introAudio: str = ""
+  questionAudio: str = ""
+  outro: str = ""
 
   #btw, the first fifth of questions don't even have these set for some reason
 
