@@ -91,3 +91,32 @@ class QuestionStore:
       if q.id == question_id:
         del self.questions[i]
 
+  def validate_questions(self) -> dict[int, list[str]]:
+    all_errors : dict[int, list[str]] = {}
+    seen_ids = set()
+
+    for i, q in enumerate(self.questions):
+      errors = []
+
+      # check if ID is unique
+      if q.id in seen_ids:
+        errors.append(f"Question ID {q.id} is duplicated.")
+      seen_ids.add(q.id)
+
+      # check if question has EXACTLY 4 answers
+      if len(q.choices) != 4:
+        errors.append(f"Question {q.id} must have EXACTLY 4 answers!")
+      for j,a in enumerate(q.choices):
+        if len(a.text.strip()) == 0:
+          errors.append(f"Question {q.id} answer {j+1} needs to have text!")
+
+      # check if question has EXACTLY 1 correct answer
+      correct_count = sum(a.correct for a in q.choices)
+      if correct_count != 1:
+        errors.append(f"Question {q.id} must have one correct answer!!!")
+
+      # if any errors were noticed, add them
+      if errors:
+        all_errors[i] = errors
+
+    return all_errors
