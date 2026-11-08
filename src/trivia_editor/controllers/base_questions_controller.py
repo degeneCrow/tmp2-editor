@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from PySide6.QtWidgets import QTableWidgetItem
+
 from trivia_editor.views.base_questions_view import BaseQuestionsView
 from trivia_editor.services.question_store import QuestionStore
 
@@ -17,17 +19,18 @@ class BaseQuestionsController:
     # connecting view signals to controller methods
     self._view.s_load_active.connect(self.load_default_questions)
     self._view.s_load_custom.connect(self.load_custom_questions)
+    self._view.table.itemChanged.connect(self._on_table_item_changed)
     self._view.s_save_active.connect(self.save_questions)
     self._view.s_save_custom.connect(self.save_custom_questions)
     self._view.s_del_question.connect(self.del_question)
     self._view.s_add_question.connect(self.add_question)
 
   @property
-  def view(self) -> Path | None:
+  def view(self):
     return self._view
 
   @property
-  def store(self) -> Path | None:
+  def store(self):
     return self._store
 
   @property
@@ -72,3 +75,41 @@ class BaseQuestionsController:
     print("deleting a question from db!")
     self.store.del_question(q_id)
     self.view._refresh_questions(self.store.questions)
+
+
+
+  def _on_table_item_changed(self, item : QTableWidgetItem):
+    if not item:
+      return
+
+    # figure out what question was actually changed
+    t_row = item.row()
+
+    # collect ALL the props
+    q_id = int(self._view.table.item(t_row, 0).text())
+    q_text = self._view.table.item(t_row, 1).text()
+    q_answers = [
+      item.text() if item is not None else ""
+      for item in [
+        self._view.table.item(t_row, col) for col in range(2, 6)
+      ]
+    ]
+    q_corr_ans_id = self._view.table.cellWidget(t_row, 6).currentIndex() - 1
+    q_choices = [
+      Choice(
+        text = text,
+        # figure out a funky way to check if int of the last dropdown refers to this answer
+        correct = (index == q_corr_ans_id)
+      )
+      for index, text in enumerate(q_answers)
+    ]
+
+    # this is the wrong basket, but i'm too tired to make a new one
+    q_updated = Question(
+      id=q_id,
+      text=q_text,
+      choices=q_choices
+    )
+
+    self.store.update_question_from_table(q_updated)
+
