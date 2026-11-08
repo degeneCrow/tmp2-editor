@@ -74,7 +74,7 @@ class BaseGameController:
     file_db_path = Path(custom_filepath)
     errors = self.store.validate_questions()
     # we always run these to clear errors
-    self.view.highlight_error_rows(errors)
+    self.view.highlight_errors(errors)
     if len(errors) > 0:
       return
     # no errors found, we can save
