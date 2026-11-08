@@ -22,21 +22,21 @@ class QuestionStore:
 
     self.questions = [
       Question(
-        id=item.get("id", -1),
-        text=item.get("text", ""),
+        id=item.get("id") or -1,
+        text=item.get("text") or "",
         choices=[
           Choice(
-            text=choice.get("text", ""),
+            text=choice.get("text") or "",
             # apparently later they decided to by default assume an option is incorrect???
-            correct=choice.get("correct", False)
+            correct=choice.get("correct") or False
           )
           for choice in item.get("choices")
         ],
-        introAudio=item.get("introAudio", ""),
-        questionAudio=item.get("questionAudio", ""),
-        outro=item.get("outro", ""),
-        us=item.get("us", False),
-        x=item.get("x", False),
+        introAudio=item.get("introAudio") or "",
+        questionAudio=item.get("questionAudio") or "",
+        outro=item.get("outro") or "",
+        us=item.get("us") or False,
+        x=item.get("x") or False,
       )
       for item in data["content"]
     ]
