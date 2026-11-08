@@ -1,10 +1,11 @@
 from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QColor
 from PySide6.QtWidgets import(
   QLabel, QPushButton,
   QVBoxLayout, QHBoxLayout, QStackedLayout,
   QWidget,
   QTableWidget, QTableWidgetItem, QComboBox,
-  QFileDialog,
+  QFileDialog, QMessageBox
 )
 
 from trivia_editor.models.basic_question import Question,Choice
@@ -59,6 +60,8 @@ class BaseQuestionsView(QWidget):
       "_remove_selected_question"
     ),
   ]
+
+  ERROR_HIGHLIGHT = QColor('#dd6969')
 
   def __init__(self, parent=None):
     super().__init__(parent)
@@ -142,6 +145,35 @@ class BaseQuestionsView(QWidget):
     self.table.resizeColumnsToContents()
     self.table.blockSignals(False)
     self.table.show()
+
+  def highlight_error_rows(self, errors: dict[int, list[str]]):
+    print("error highlighting called")
+    for row in range(self.table.rowCount()):
+      # ALWAYS clear previous highlights
+      for column in range(self.table.columnCount()):
+        item = self.table.item(row, column)
+        if item is not None:
+          item.setBackground(QColor())
+          item.setToolTip("")
+      # check if this row has an error msg
+      q_id = int(self.table.item(row,0).text())
+      if not q_id in errors:
+        continue
+      # this has an error; mark it
+      error_msg = "\n".join(errors[q_id])
+      for column in range(self.table.columnCount()):
+        item = self.table.item(row, column)
+        if item is not None:
+          item.setBackground(self.ERROR_HIGHLIGHT)
+          # we don't have a good way of checking what cell this is,
+          # so set the same tooltip for everything
+          item.setToolTip(error_msg)
+
+    QMessageBox.warning(
+        self,
+        "Question errors!",
+        f"The following questions have errors:\n - {"\n - ".join(str(q_id) for q_id in errors)}"
+    )
 
   # a tiny helper method to link combobox edit to table edit
   def _on_correct_choice_changed(self, row: int):

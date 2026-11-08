@@ -107,13 +107,18 @@ class QuestionStore:
     all_errors : dict[int, list[str]] = {}
     seen_ids = set()
 
-    for i, q in enumerate(self.questions):
+    for q in self.questions:
       errors = []
 
       # check if ID is unique
+      #(yes, even if we always assume it's unique elsewhere)
       if q.id in seen_ids:
         errors.append(f"Question ID {q.id} is duplicated.")
       seen_ids.add(q.id)
+
+      # check if question is even set in the first place
+      if len(q.text.strip()) == 0:
+        errors.append(f"Question {q.id} must have a question!")
 
       # check if question has EXACTLY 4 answers
       if len(q.choices) != 4:
@@ -129,6 +134,6 @@ class QuestionStore:
 
       # if any errors were noticed, add them
       if errors:
-        all_errors[i] = errors
+        all_errors[q.id] = errors
 
     return all_errors

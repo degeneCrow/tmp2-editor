@@ -2,6 +2,7 @@ from pathlib import Path
 
 from PySide6.QtWidgets import QTableWidgetItem
 
+from trivia_editor.models.basic_question import Choice
 from trivia_editor.views.base_questions_view import BaseQuestionsView
 from trivia_editor.services.question_store import QuestionStore
 
@@ -59,6 +60,12 @@ class BaseQuestionsController:
 
   def save_questions(self):
     print("question saving called!")
+    errors = self.store.validate_questions()
+    # we always run this, to clear errors as well
+    self._view.highlight_error_rows(errors)
+    if len(errors) > 0:
+      return
+    # no errors found, we can save
     self.store.save_questions(self._current_db)
 
   def save_custom_questions(self, custom_filepath: str):
