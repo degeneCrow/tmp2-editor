@@ -2,7 +2,7 @@ from collections.abc import Iterable
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QMainWindow, QTabWidget, QVBoxLayout, QWidget
 
-from trivia_editor.views.base_questions_view import BaseQuestionsView
+from trivia_editor.views.base_game_view import BaseGameView
 from trivia_editor.views.final_round_view import FinalRoundView
 from trivia_editor.views.components.game_folder_selector import GameFolderSelector
 

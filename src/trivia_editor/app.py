@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from trivia_editor.controllers.base_questions_controller import BaseQuestionsController
-from trivia_editor.views.base_questions_view import BaseQuestionsView
+from trivia_editor.controllers.base_game_controller import BaseGameController
+from trivia_editor.views.base_game_view import BaseGameView
 from trivia_editor.services.question_store import QuestionStore
 from trivia_editor.views.final_round_view import FinalRoundView
 from trivia_editor.views.main_window import MainWindow
@@ -9,7 +9,7 @@ from trivia_editor.views.main_window import MainWindow
 class AppController:
   def __init__(self):
     self.game_path : str = None
-    self.base_questions = BaseQuestionsController(BaseQuestionsView(), QuestionStore())
+    self.base_questions = BaseGameController(BaseGameView(), QuestionStore())
 
     self.window = MainWindow(views=[
       ("Base Game Questions", self.base_questions.view),
