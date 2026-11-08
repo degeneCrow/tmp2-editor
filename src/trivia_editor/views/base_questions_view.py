@@ -3,7 +3,7 @@ from PySide6.QtWidgets import(
   QLabel, QPushButton,
   QVBoxLayout, QHBoxLayout, QStackedLayout,
   QWidget,
-  QTableWidget, QTableWidgetItem,
+  QTableWidget, QTableWidgetItem, QComboBox,
   QFileDialog,
 )
 
@@ -98,46 +98,56 @@ class BaseQuestionsView(QWidget):
     self.pages.addWidget(self.content_page)
 
   def _refresh_questions(self, questions: list[Question]):
+    self.table.blockSignals(True)
     self.table.setRowCount(0)
 
     for question in questions:
-      # #the following should really be done by controller or store
-      # if len(question.choices) > 4:
-      #   raise ValueError(
-      #     f"Question {question.id} has {len(question.choices)} choices; expected max of 4."
-      #   )
-
       # calculating temp id of "correct answer"
       correct_answers = [
         index + 1
         for index, choice in enumerate(question.choices)
         if choice.correct
       ]
-      answer = str(correct_answers[0]) if correct_answers else "0"
-      #the following should really be done by controller or store
-      # if len(correct_answer) != 1:
-      #   raise ValueError(
-      #     f"Question {question.id} must have exactly one correct choice."
-      #   )
+      the_answer = correct_answers[0] if correct_answers else 0
 
       choices = [c.text for c in question.choices]
       choices.extend([""] * (4 - len(choices)))
 
-      row = self.table.rowCount()
-      self.table.insertRow(row)
+      this_row = self.table.rowCount()
+      self.table.insertRow(this_row)
 
       values = [
         question.id,
         question.text,
         *choices,
-        answer,
       ]
 
       for column, value in enumerate(values):
-        self.table.setItem(row, column, QTableWidgetItem(str(value)))
+        cell = QTableWidgetItem(str(value))
+        # making ID column not editable
+        if column == 0:
+          cell.setFlags(cell.flags() & ~Qt.ItemIsEditable)
+        self.table.setItem(this_row, column, cell)
+
+      correct_cb = QComboBox()
+      correct_cb.addItems(["0", "1", "2", "3", "4"])
+      cb_model = correct_cb.model()
+      cb_model.item(0).setEnabled(False)
+      correct_cb.setCurrentIndex(the_answer)
+      correct_cb.currentIndexChanged.connect(
+        lambda _index, row=this_row: self._on_correct_choice_changed(this_row)
+      )
+      self.table.setCellWidget(row, 6, correct_cb)
 
     self.table.resizeColumnsToContents()
+    self.table.blockSignals(False)
     self.table.show()
+
+  # a tiny helper method to link combobox edit to table edit
+  def _on_correct_choice_changed(self, row: int):
+    # this is bad but eeeeeeeeeh
+    cell = self.table.item(row, 1)
+    self.table.itemChanged.emit(cell)
 
   def _display_questions(self, questions: list[Question]):
     self.pages.setCurrentWidget(self.placeholder_page)
