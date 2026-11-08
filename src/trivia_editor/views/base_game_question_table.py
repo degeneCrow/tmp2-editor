@@ -17,7 +17,6 @@ class BaseGameQuestionTable(BaseGameTable):
     "Correct choice",
   ]
 
-
   NON_EDITABLE_COLUMNS = {0}
 
   COLUMN_WIDTHS = [80, 400, 150, 150, 150, 150, 100]

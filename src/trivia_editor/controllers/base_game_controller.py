@@ -24,6 +24,7 @@ class BaseGameController:
     self._view.s_save_custom.connect(self.save_custom_questions)
     self._view.s_del_question.connect(self.del_question)
     self._view.s_add_question.connect(self.add_question)
+    self._view.audio_tab.s_play_audio.connect(self.play_audio)
 
     self._view.s_tables_modified.connect(self._on_table_item_changed)
 
@@ -129,3 +130,6 @@ class BaseGameController:
   def _on_questions_content_changed(self, item: QTableWidgetItem):
     # for now don't do anything?
     print("Something has been edited in the audio table!")
+
+  def play_audio(self, relative_path:str):
+    print(f"Called to play {self.game_path/relative_path}")
