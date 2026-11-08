@@ -132,6 +132,10 @@ class QuestionStore:
       if correct_count != 1:
         errors.append(f"Question {q.id} must have one correct answer!!!")
 
+      # check if question has a voiceline
+      if len(q.questionAudio.strip()) == 0:
+        errors.append(f"Question {q.id} needs to be voiced!")
+
       # if any errors were noticed, add them
       if errors:
         all_errors[q.id] = errors
