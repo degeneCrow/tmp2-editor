@@ -2,7 +2,6 @@ from pathlib import Path
 
 from PySide6.QtWidgets import QTableWidgetItem
 
-from trivia_editor.models.basic_question import Choice
 from trivia_editor.views.base_questions_view import BaseQuestionsView
 from trivia_editor.services.question_store import QuestionStore
 
@@ -105,12 +104,5 @@ class BaseQuestionsController:
       for index, text in enumerate(q_answers)
     ]
 
-    # this is the wrong basket, but i'm too tired to make a new one
-    q_updated = Question(
-      id=q_id,
-      text=q_text,
-      choices=q_choices
-    )
-
-    self.store.update_question_from_table(q_updated)
+    self.store.update_question_from_table(q_id, q_text, q_choices)
 

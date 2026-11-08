@@ -92,15 +92,15 @@ class QuestionStore:
       if q.id == question_id:
         del self.questions[i]
 
-  def update_question_from_table(self, q_updated:Question):
+  def update_question_from_table(self, q_id:int, q_updated_text:str, q_updated_choices:list[Choice]):
     for q_original in self.questions:
-      if q_original.id != q_updated.id:
+      if q_original.id != q_id:
         continue
       # found id, now update the other values
-      q_original.text = q_updated.text
+      q_original.text = q_updated_text
       q_original.choices = [
         Choice(text=c.text, correct=c.correct)
-        for c in q_updated.choices
+        for c in q_updated_choices
       ]
 
   def validate_questions(self) -> dict[int, list[str]]:
