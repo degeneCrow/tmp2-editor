@@ -169,6 +169,9 @@ class BaseQuestionsView(QWidget):
 
   def _remove_selected_question(self):
     r_id = self.table.currentRow()
+    if r_id < 0:
+      return
+
     q_id_cell = self.table.item(r_id, 0)
     q_id = int(q_id_cell.text()) # the ID of the question in the database
     self.s_del_question.emit(q_id)
