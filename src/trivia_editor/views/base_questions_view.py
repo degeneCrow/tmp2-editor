@@ -39,7 +39,7 @@ class BaseQuestionsView(QWidget):
       "_choose_custom_db_to_load"
     ),
     (
-      "Save",
+      "Save as Active",
       "Save the current question database as the one the game would load if you ran it now",
       "s_save_active"
     ),
@@ -137,7 +137,7 @@ class BaseQuestionsView(QWidget):
       correct_cb.currentIndexChanged.connect(
         lambda _index, row=this_row: self._on_correct_choice_changed(this_row)
       )
-      self.table.setCellWidget(row, 6, correct_cb)
+      self.table.setCellWidget(this_row, 6, correct_cb)
 
     self.table.resizeColumnsToContents()
     self.table.blockSignals(False)

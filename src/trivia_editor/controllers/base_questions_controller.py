@@ -2,6 +2,7 @@ from pathlib import Path
 
 from PySide6.QtWidgets import QTableWidgetItem
 
+from trivia_editor.models.basic_question import Choice
 from trivia_editor.views.base_questions_view import BaseQuestionsView
 from trivia_editor.services.question_store import QuestionStore
 
