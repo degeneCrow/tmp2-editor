@@ -35,8 +35,8 @@ class QuestionStore:
         introAudio=item.get("introAudio", ""),
         questionAudio=item.get("questionAudio", ""),
         outro=item.get("outro", ""),
-        us=item.get("us", ""),
-        x=item.get("x", ""),
+        us=item.get("us", False),
+        x=item.get("x", False),
       )
       for item in data["content"]
     ]
