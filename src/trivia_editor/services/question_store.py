@@ -22,19 +22,18 @@ class QuestionStore:
 
     self.questions = [
       Question(
-        id=item.get("id") or -1,
+        id=int(item.get("id")) or -1,
         text=item.get("text") or "",
         choices=[
           Choice(
             text=choice.get("text") or "",
-            # apparently later they decided to by default assume an option is incorrect???
             correct=choice.get("correct") or False
           )
           for choice in item.get("choices")
         ],
-        introAudio=item.get("introAudio") or "",
+        introAudio=item.get("introAudio"), # can be null
         questionAudio=item.get("questionAudio") or "",
-        outro=item.get("outro") or "",
+        outro=item.get("outro"), # can be null
         us=item.get("us") or False,
         x=item.get("x") or False,
       )
@@ -48,17 +47,19 @@ class QuestionStore:
       choices = []
       for c in q.choices:
         choices.append({
-          "text": c.text,
-          "correct": c.correct
+          "correct": c.correct,
+          "text": str(c.text),
         })
 
       data["content"].append({
-        "id": q.id,
-        "text": q.text,
         "choices": choices,
+        "id": str(q.id),
+        # these two can be either string or null, so no special parsing
         "introAudio": q.introAudio,
         "outro": q.outro,
-        "questionAudio": q.questionAudio,
+        "questionAudio": str(q.questionAudio),
+        "text": str(q.text),
+        # i am PRAYING nowhere in the code they are set as strings
         "us": q.us,
         "x": q.x,
       })
