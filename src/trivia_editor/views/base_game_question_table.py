@@ -28,24 +28,24 @@ class BaseGameQuestionTable(BaseGameTable):
     # remove all existing entries
     self.table.setRowCount(0)
 
-    for question in questions:
+    for q in questions:
       # calculating temp id of "correct answer"
       correct_answers = [
         index + 1
-        for index, choice in enumerate(question.choices)
+        for index, choice in enumerate(q.choices)
         if choice.correct
       ]
       the_answer = correct_answers[0] if correct_answers else 0
 
-      choices = [c.text for c in question.choices]
+      choices = [c.text for c in q.choices]
       choices.extend([""] * (4 - len(choices)))
 
       this_row = self.table.rowCount()
       self.table.insertRow(this_row)
 
       values = [
-        question.id,
-        question.text,
+        q.id,
+        q.text,
         *choices,
       ]
 
@@ -56,7 +56,7 @@ class BaseGameQuestionTable(BaseGameTable):
         self.table.setItem(this_row, column, cell)
 
       correct_cb = QComboBox()
-      correct_cb.addItems(["0", "1", "2", "3", "4"])
+      correct_cb.addItems(["Unset", "1", "2", "3", "4"])
       cb_model = correct_cb.model()
       cb_model.item(0).setEnabled(False)
       correct_cb.setCurrentIndex(the_answer)

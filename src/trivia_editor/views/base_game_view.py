@@ -19,8 +19,6 @@ class BaseGameView(QWidget):
   s_add_question = Signal()
   s_del_question = Signal(int)
 
-  s_tables_modified = Signal()
-
   TC_BUTTONS = [
     (
       "Load active question set",

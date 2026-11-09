@@ -26,7 +26,8 @@ class BaseGameController:
     self._view.s_add_question.connect(self.add_question)
     self._view.audio_tab.s_play_audio.connect(self.play_audio)
 
-    self._view.s_tables_modified.connect(self._on_table_item_changed)
+    self._view.question_tab.table.cellChanged.connect(self._on_questions_content_changed)
+    self._view.audio_tab.table.cellChanged.connect(self._on_audio_content_changed)
 
   @property
   def view(self):
@@ -91,24 +92,9 @@ class BaseGameController:
     self.store.del_question(q_id)
     self.view.refresh(self.store.questions)
 
-  def _on_table_item_changed(self, caller: str, item: QTableWidgetItem):
-    if not item:
-      return
-
-    if caller == "questions":
-      _on_questions_content_changed(item)
-    elif caller == "audio":
-      _on_audio_content_changed(item)
-    else:
-      print("Unknown exception: _on_table_item_changed called without known caller!")
-    # no matter what changed, we refresh it all
-    self.view.refresh(self.store.questions)
-
-  def _on_questions_content_changed(self, item: QTableWidgetItem):
-    # figure out what question was actually changed
-    t_row = item.row()
-
+  def _on_questions_content_changed(self, t_row: int, t_col: int):
     question_table = self.view.question_tab.table
+
     # collect ALL the props
     q_id = int(question_table.item(t_row, 0).text())
     q_text = question_table.item(t_row, 1).text()
@@ -127,9 +113,20 @@ class BaseGameController:
       for index, text in enumerate(q_answers)
     ]
 
-  def _on_questions_content_changed(self, item: QTableWidgetItem):
-    # for now don't do anything?
-    print("Something has been edited in the audio table!")
+    this.store.update_from_question_table(q_id, q_text, q_choices)
+
+  def _on_audio_content_changed(self, item: QTableWidgetItem):
+    audio_table = self.view.audio_tab.table
+
+    # collect ALL the props
+    q_id = int(audio_table.item(t_row, 0).text())
+    # user can't edit the question itself here, so we don't care about it
+    q_subQuest = str(audio_table.item(t_row, 2).text())
+    q_subIntro = str(audio_table.item(t_row, 4).text())
+    q_subOutro = str(audio_table.item(t_row, 6).text())
+
+    this.store.update_from_audio_table(q_id, q_subQuest, q_subIntro, q_subOutro)
+
 
   def play_audio(self, relative_path:str):
     print(f"Called to play {self.game_path/relative_path}")

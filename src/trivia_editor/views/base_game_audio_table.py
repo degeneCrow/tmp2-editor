@@ -47,7 +47,7 @@ class BaseGameAudioTable(BaseGameTable):
       # Could probably figure out a way to make it more dynamic,
       # but eh.
       # do it yourself if you want
-      c1 = QTableWidgetItem(q.id)
+      c1 = QTableWidgetItem(str(q.id))
       c1.setFlags(~Qt.ItemIsEditable)
       self.table.setItem(this_row, 0, c1)
 
@@ -72,26 +72,6 @@ class BaseGameAudioTable(BaseGameTable):
 
       c1 = self._build_audio_controls(q, "outro")
       self.table.setCellWidget(this_row, 7, c1)
-
-      ###########
-      ########### CHANGE THIS LATER
-      ###########
-      values = [
-        q.id,
-        q.text,
-        q.questionAudio,
-        q.introAudio,
-        q.outro,
-      ]
-
-      for col_nr, value in enumerate(values):
-        cell = QTableWidgetItem(str(value))
-        if col_nr < 2: # making ID & question columns not editable
-          cell.setFlags(cell.flags() & ~Qt.ItemIsEditable)
-        self.table.setItem(this_row, col_nr, cell)
-      ###########
-      ########### CHANGE THIS LATER
-      ###########
 
   def _audio_path(self, q_id: int, kind: str) -> str:
     filename = self.AUDIO_FILENAMES[kind]

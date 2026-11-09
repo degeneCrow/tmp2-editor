@@ -92,7 +92,7 @@ class QuestionStore:
       if q.id == question_id:
         del self.questions[i]
 
-  def update_question_from_table(self, q_id:int, q_updated_text:str, q_updated_choices:list[Choice]):
+  def update_from_question_table(self, q_id:int, q_updated_text:str, q_updated_choices:list[Choice]):
     for q_original in self.questions:
       if q_original.id != q_id:
         continue
@@ -102,6 +102,15 @@ class QuestionStore:
         Choice(text=c.text, correct=c.correct)
         for c in q_updated_choices
       ]
+
+  def update_from_audio_table(self, q_id:int, q_up_quest:str, q_up_intro:str, q_up_outro:str):
+    for q_original in self.questions:
+      if q_original.id != q_id:
+        continue
+      # found id, now update the other values
+      q_original.questionAudio = q_up_quest
+      q_original.introAudio = q_up_intro
+      q_original.outro = q_up_outro
 
   def validate_questions(self) -> dict[int, list[str]]:
     all_errors : dict[int, list[str]] = {}
