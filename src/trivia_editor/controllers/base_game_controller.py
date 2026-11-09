@@ -52,6 +52,9 @@ class BaseGameController:
   def _load_questions(self):
     self.store.load_questions(self._current_db)
     self.view.refresh(self.store.questions)
+    # let's also immediately validate the loaded questions
+    errors = self.store.validate_questions()
+    self.view.highlight_errors(errors)
 
   def load_default_questions(self):
     print("default question loading called!")
