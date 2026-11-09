@@ -1,6 +1,8 @@
 from pathlib import Path
 
-from PySide6.QtWidgets import QTableWidgetItem
+from playsound3 import playsound
+
+from PySide6.QtWidgets import QTableWidgetItem, QMessageBox
 
 from trivia_editor.models.basic_question import Choice
 from trivia_editor.views.base_game_view import BaseGameView
@@ -134,7 +136,17 @@ class BaseGameController:
 
 
   def play_audio(self, relative_path:str):
-    print(f"Called to play {self.game_path/relative_path}")
+    path = self.game_path/relative_path
+    print(f"Called to play {path}")
+    # do a quick check on if the file actually exists
+    if not path.exists():
+
+      QMessageBox.warning(
+          self,
+          "Audio errors!",
+          f"The following question audio does not have a linked audio file:\n{relative_path}"
+      )
+    playsound(path, False, None)
 
   def replace_audio(self, q_id:int, absolute_filepath:str, audio_type:str):
     print(f"Picked '{absolute_filepath}' to replace {self.game_path/"content/TDQuestion"/str(q_id)/audio_type}.ogg")
