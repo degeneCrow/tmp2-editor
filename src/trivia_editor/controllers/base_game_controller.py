@@ -24,10 +24,12 @@ class BaseGameController:
     self._view.s_save_custom.connect(self.save_custom_questions)
     self._view.s_del_question.connect(self.del_question)
     self._view.s_add_question.connect(self.add_question)
-    self._view.audio_tab.s_play_audio.connect(self.play_audio)
 
     self._view.question_tab.table.cellChanged.connect(self._on_questions_content_changed)
     self._view.audio_tab.table.cellChanged.connect(self._on_audio_content_changed)
+
+    self._view.audio_tab.s_play_audio.connect(self.play_audio)
+    self._view.audio_tab.s_upload_audio.connect(self.replace_audio)
 
   @property
   def view(self):
@@ -130,3 +132,6 @@ class BaseGameController:
 
   def play_audio(self, relative_path:str):
     print(f"Called to play {self.game_path/relative_path}")
+
+  def replace_audio(self, q_id:int, absolute_filepath:str, audio_type:str):
+    print(f"Picked '{absolute_filepath}' to replace {self.game_path/"content/TDQuestion"/str(q_id)/audio_type}.ogg")

@@ -2,6 +2,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import(
   QHBoxLayout,
   QWidget, QTableWidget, QTableWidgetItem,
+  QFileDialog,
   QPushButton
 )
 
@@ -31,6 +32,7 @@ class BaseGameAudioTable(BaseGameTable):
   }
 
   s_play_audio = Signal(str)
+  s_upload_audio = Signal(int, str, str)
 
   def __init__(self, parent=None):
     super().__init__(parent)
@@ -105,4 +107,13 @@ class BaseGameAudioTable(BaseGameTable):
     return container
 
   def _choose_audio_replacement(self, q_id:int, audio_type:str):
-    print(f"Picked to replace {audio_type} on {q_id}")
+    audio_filepath, _ = QFileDialog.getOpenFileName(
+      self,
+      "Select audio file to play",
+      "",
+      "Audio/Ogg (*.ogg);;All files (*)",
+    )
+    if not audio_filepath: # user cancelled
+      return
+    # send the filepath to the controller
+    self.s_upload_audio.emit(q_id, audio_filepath, audio_type)

@@ -125,6 +125,10 @@ class QuestionStore:
         errors.append(f"Question ID {q.id} is duplicated.")
       seen_ids.add(q.id)
 
+      # check if ID is actually valid
+      if q.id < 1:
+        errors.append(f"Question ID {q.id} is invalid.")
+
       # check if question is even set in the first place
       if len(q.text.strip()) == 0:
         errors.append(f"Question {q.id} must have a question!")
@@ -143,7 +147,7 @@ class QuestionStore:
 
       # check if question has a voiceline
       if len(q.questionAudio.strip()) == 0:
-        errors.append(f"Question {q.id} needs to be voiced!")
+        errors.append(f"Question {q.id} needs to have a question subtitle!")
 
       # if any errors were noticed, add them
       if errors:
