@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import(
-  QHBoxLayout,
+  QHBoxLayout, QSizePolicy,
   QWidget, QTableWidget, QTableWidgetItem,
   QFileDialog,
   QPushButton
@@ -87,6 +87,8 @@ class BaseGameAudioTable(BaseGameTable):
 
     container = QWidget()
     layout = QHBoxLayout(container)
+    layout.setContentsMargins(2, 2, 2, 2)
+    layout.setSpacing(2)
 
     play_button = QPushButton("▶")
     # play_button.setEnabled(playback_path.is_file())
@@ -100,6 +102,12 @@ class BaseGameAudioTable(BaseGameTable):
       lambda _checked=False, q_id=q.id, audio_type=audio_type:
         self._choose_audio_replacement(q_id, audio_type)
     )
+    # expanding the buttons vertically
+    for button in (play_button, replace_btn):
+      button.setSizePolicy(
+        QSizePolicy.Policy.Expanding,
+        QSizePolicy.Policy.Expanding,
+      )
 
     layout.addWidget(play_button)
     layout.addWidget(replace_btn)
