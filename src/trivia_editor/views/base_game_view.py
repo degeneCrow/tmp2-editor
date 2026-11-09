@@ -118,8 +118,18 @@ class BaseGameView(QWidget):
 
   def _remove_selected_question(self):
     # first, check which tab is active/visible
+    table = (
+      self.question_tab.table
+      if self.content_tabs.currentWidget() is self.question_tab
+      else self.audio_tab.table
+    )
     # then, get selected item/row from THAT table
-    q_id = -1
+    selected = table.selectedItems()
+    if not selected:
+        return
+    row = selected[0].row()
+    q_id = int(table.item(row, 0).text())
+    # pass id to the controller
     self.s_del_question.emit(q_id)
 
   def refresh(self, questions : list[Question]):
