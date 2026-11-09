@@ -115,7 +115,7 @@ class BaseGameController:
       for index, text in enumerate(q_answers)
     ]
 
-    this.store.update_from_question_table(q_id, q_text, q_choices)
+    self.store.update_from_question_table(q_id, q_text, q_choices)
 
   def _on_audio_content_changed(self, item: QTableWidgetItem):
     audio_table = self.view.audio_tab.table
@@ -127,7 +127,7 @@ class BaseGameController:
     q_subIntro = str(audio_table.item(t_row, 4).text())
     q_subOutro = str(audio_table.item(t_row, 6).text())
 
-    this.store.update_from_audio_table(q_id, q_subQuest, q_subIntro, q_subOutro)
+    self.store.update_from_audio_table(q_id, q_subQuest, q_subIntro, q_subOutro)
 
 
   def play_audio(self, relative_path:str):
