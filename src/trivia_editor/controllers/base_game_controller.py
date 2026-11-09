@@ -56,7 +56,7 @@ class BaseGameController:
     self.store.load_questions(self._current_db)
     self.view.refresh(self.store.questions)
     # let's also immediately validate the loaded questions
-    errors = self.store.validate_questions()
+    errors = self.store.validate_questions(self.game_path)
     self.view.highlight_errors(errors)
 
   def load_default_questions(self):
@@ -71,7 +71,7 @@ class BaseGameController:
 
   def save_questions(self):
     print("question saving called!")
-    errors = self.store.validate_questions()
+    errors = self.store.validate_questions(self.game_path)
     # we always run these to clear errors
     self.view.highlight_errors(errors)
     if len(errors) > 0:
@@ -82,7 +82,7 @@ class BaseGameController:
   def save_custom_questions(self, custom_filepath: str):
     print("custom question saving called!")
     file_db_path = Path(custom_filepath)
-    errors = self.store.validate_questions()
+    errors = self.store.validate_questions(self.game_path)
     # we always run these to clear errors
     self.view.highlight_errors(errors)
     if len(errors) > 0:

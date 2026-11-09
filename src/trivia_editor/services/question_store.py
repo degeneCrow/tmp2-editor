@@ -112,7 +112,7 @@ class QuestionStore:
       q_original.introAudio = q_up_intro
       q_original.outro = q_up_outro
 
-  def validate_questions(self) -> dict[int, list[str]]:
+  def validate_questions(self, game_path: Path) -> dict[int, list[str]]:
     all_errors : dict[int, list[str]] = {}
     seen_ids = set()
 
@@ -148,6 +148,30 @@ class QuestionStore:
       # check if question has a voiceline
       if len(q.questionAudio.strip()) == 0:
         errors.append(f"Question {q.id} needs to have a question subtitle!")
+
+      prop_audio = {
+        "questionAudio" : "questionAudio.ogg",
+        "introAudio"    : "introAudio.ogg",
+        "outro"         : "outroAudio.ogg",
+      }
+      # check if every registered voiceline actually HAS an associated audio file
+
+      for field, filename in prop_audio.items():
+        # check if anything is set there
+        if not getattr(q, field, ""):
+          # no subtitle, game won't expect audio; skip
+          continue
+        audio_path = (
+          Path(game_path)
+          / "content"
+          / "TDQuestion"
+          / str(q.id)
+          / filename
+        )
+        if not audio_path.is_file():
+          errors.append(
+            f"Question {q.id} has {field} registered, but its audio file is missing:\n{audio_path}"
+          )
 
       # if any errors were noticed, add them
       if errors:
