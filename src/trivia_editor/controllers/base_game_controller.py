@@ -117,7 +117,7 @@ class BaseGameController:
 
     self.store.update_from_question_table(q_id, q_text, q_choices)
 
-  def _on_audio_content_changed(self, item: QTableWidgetItem):
+  def _on_audio_content_changed(self, t_row: int, t_col: int):
     audio_table = self.view.audio_tab.table
 
     # collect ALL the props
