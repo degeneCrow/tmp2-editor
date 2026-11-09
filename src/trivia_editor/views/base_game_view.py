@@ -160,10 +160,12 @@ class BaseGameView(QWidget):
 
   def highlight_errors(self, errors: dict[int, list[str]]):
     print("error highlighting called")
-    # highlight rows in both child tables
+    # clear previous highlights, and restyle errors in both child tables
     self.question_tab.highlight_errors(errors)
     self.audio_tab.highlight_errors(errors)
-    # display global-ish warning for user
+    if not errors:
+      return
+    # since errors actually exist, display global-ish warning for user
     QMessageBox.warning(
         self,
         "Question errors!",
