@@ -1,3 +1,4 @@
+mutagen==1.48.1
 packaging==26.3
 playsound3==3.3.2
 PySide6==6.12.0

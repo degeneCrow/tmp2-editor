@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from mutagen import File
 from playsound3 import playsound
 
 from PySide6.QtWidgets import QTableWidgetItem, QMessageBox
@@ -140,7 +140,6 @@ class BaseGameController:
     print(f"Called to play {path}")
     # do a quick check on if the file actually exists
     if not path.exists():
-
       QMessageBox.warning(
           self,
           "Audio errors!",
@@ -149,4 +148,31 @@ class BaseGameController:
     playsound(path, False, None)
 
   def replace_audio(self, q_id:int, absolute_filepath:str, audio_type:str):
-    print(f"Picked '{absolute_filepath}' to replace {self.game_path/"content/TDQuestion"/str(q_id)/audio_type}.ogg")
+    source = Path(absolute_filepath)
+    target = Path(self.game_path/"content/TDQuestion"/str(q_id)/f"{audio_type}.ogg")
+    print(f"Picked '{source}' to replace {target}")
+
+    # double-check source file
+    if not source.exists:
+      QMessageBox.warning(
+          self,
+          "Audio errors!",
+          f"The selected file does not exist:\n{source}"
+      )
+    if not _is_ogg(source):
+      QMessageBox.warning(
+          self,
+          "Audio errors!",
+          f"The selected file is not a proper .ogg file:\n{source}"
+      )
+    # validation worked
+    source.replace(target)
+
+  def _is_ogg(file : Path):
+    with open(file, "rb") as f:
+      #validates encoding to be an audio file
+      if f.read(4) == b"OggS":
+        return True
+      #else
+      return False
+
