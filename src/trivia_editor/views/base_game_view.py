@@ -2,7 +2,8 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import(
   QLabel, QPushButton,
-  QVBoxLayout, QHBoxLayout, QStackedLayout,
+  QVBoxLayout, QHBoxLayout, QStackedLayout, QCheckBox,
+  QSpacerItem, QSizePolicy,
   QWidget, QTabWidget,
   QFileDialog, QMessageBox
 )
@@ -19,7 +20,7 @@ class BaseGameView(QWidget):
   s_add_question = Signal()
   s_del_question = Signal(int)
 
-  TC_BUTTONS = [
+  TC_BUTTONS_TOP = [
     (
       "Load active question set",
       "Read the question database that the game would load if you ran it now",
@@ -39,7 +40,9 @@ class BaseGameView(QWidget):
       "Save as...",
       "Save the current question database with a custom name; useful for testing and iteration",
       "_choose_custom_db_to_save"
-    ),
+    )
+  ]
+  TC_BUTTONS_BOTTOM = [
     (
       "Add question",
       "Insert a new row of questions at the end of the database",
@@ -83,7 +86,27 @@ class BaseGameView(QWidget):
     self.table_controls = QWidget()
     tc_layout = QVBoxLayout(self.table_controls)
     tc_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-    for text, tooltip, signal_name in self.TC_BUTTONS:
+    for text, tooltip, signal_name in self.TC_BUTTONS_TOP:
+      button = QPushButton(text)
+      button.setToolTip(tooltip)
+      button.clicked.connect(getattr(self, signal_name))
+      tc_layout.addWidget(button)
+
+    self.chk_validate_audio = QCheckBox("Force save")
+    self.chk_validate_audio.setToolTip(
+        "Ignore whether there are errors before saving.\n"
+        "Having this enabled will force a save/overwrite of the database, even if there are missing answers or audio files"
+    )
+    self.chk_validate_audio.setChecked(False)
+    tc_layout.addWidget(self.chk_validate_audio)
+
+    tc_layout.addItem(QSpacerItem(
+      0, 0,
+      QSizePolicy.Policy.Minimum,
+      QSizePolicy.Policy.Expanding,
+    ))
+
+    for text, tooltip, signal_name in self.TC_BUTTONS_BOTTOM:
       button = QPushButton(text)
       button.setToolTip(tooltip)
       button.clicked.connect(getattr(self, signal_name))

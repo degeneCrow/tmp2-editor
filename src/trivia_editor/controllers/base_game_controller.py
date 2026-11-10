@@ -74,7 +74,9 @@ class BaseGameController:
     errors = self.store.validate_questions(self.game_path)
     # we always run these to clear errors
     self.view.highlight_errors(errors)
-    if len(errors) > 0:
+
+    force_save = self.view.chk_validate_audio.isChecked()
+    if len(errors) > 0 and not force_save:
       return
     # no errors found, we can save
     self.store.save_questions(self._current_db)
@@ -85,7 +87,9 @@ class BaseGameController:
     errors = self.store.validate_questions(self.game_path)
     # we always run these to clear errors
     self.view.highlight_errors(errors)
-    if len(errors) > 0:
+
+    force_save = self.view.chk_validate_audio.isChecked()
+    if len(errors) > 0 and not force_save:
       return
     # no errors found, we can save
     self.store.save_questions(file_db_path)
