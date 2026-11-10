@@ -169,7 +169,7 @@ class BaseGameController:
           f"The selected file is not a proper .ogg file:\n{source}"
       )
     # validation worked
-    os.makedirs(targetPath)
+    os.makedirs(targetPath, exist_ok=True)
     source.replace(targetPath/targetFile)
 
   def _is_ogg(self, file : Path):
