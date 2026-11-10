@@ -71,28 +71,21 @@ class BaseGameController:
 
   def save_questions(self):
     print("question saving called!")
-    errors = self.store.validate_questions(self.game_path)
-    # we always run these to clear errors
-    self.view.highlight_errors(errors)
-
-    force_save = self.view.chk_validate_audio.isChecked()
-    if len(errors) > 0 and not force_save:
-      return
-    # no errors found, we can save
-    self.store.save_questions(self._current_db)
+    self._validate_and_save_questions(self._current_db)
 
   def save_custom_questions(self, custom_filepath: str):
     print("custom question saving called!")
-    file_db_path = Path(custom_filepath)
+    self._validate_and_save_questions(Path(custom_filepath))
+
+  def _validate_and_save_questions(self, file_db_path: Path):
     errors = self.store.validate_questions(self.game_path)
-    # we always run these to clear errors
     self.view.highlight_errors(errors)
 
     force_save = self.view.chk_validate_audio.isChecked()
-    if len(errors) > 0 and not force_save:
-      return
-    # no errors found, we can save
-    self.store.save_questions(file_db_path)
+    if errors and not force_save:
+        return
+
+    self.store.save_questions(file_path=file_db_path)
 
   def add_question(self):
     print("registering a new question row!")
