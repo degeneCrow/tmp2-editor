@@ -26,3 +26,20 @@ class Question:
   us: bool = False
   # what is this for???
   x: bool = False
+  # models/question_json.py
+
+  def question_json_data(self) -> dict:
+    has_intro = "true" if (self.introAudio or "").strip() else "false"
+    return {
+      "fields": [   # var value?       # var name      # subtitle?
+        {"t": "B", "v": has_intro,    "n": "HasIntro"},
+        {"t": "A", "v": "introAudio", "n": "Intro",   "s": self.introAudio},
+        {"t": "B", "v": "true",       "n": "HasQ"},
+        {"t": "A", "v": "questionAudio","n":"Q",      "s": self.questionAudio},
+        {"t": "B", "v": "false",      "n": "HasPic"},
+        {"t": "G", "v": "image",      "n": "Pic"},
+        {"t": "B", "v": "false",      "n": "HasVamp"},
+        {"t": "A", "v": "pictureVamp","n": "Vamp"},
+      ]
+    }
+

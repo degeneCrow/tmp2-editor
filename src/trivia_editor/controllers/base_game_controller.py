@@ -85,7 +85,7 @@ class BaseGameController:
     if errors and not force_save:
         return
 
-    self.store.save_questions(file_path=file_db_path)
+    self.store.save_questions(file_path=file_db_path, game_path=self.game_path)
 
   def add_question(self):
     print("registering a new question row!")

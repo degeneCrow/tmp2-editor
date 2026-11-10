@@ -40,7 +40,7 @@ class QuestionStore:
       for item in data["content"]
     ]
 
-  def save_questions(self, file_path: Path):
+  def save_questions(self, game_path: Path, file_path: Path):
     data = { "content": [] }
 
     for q in self.questions:
@@ -63,6 +63,12 @@ class QuestionStore:
         "us": q.us,
         "x": q.x,
       })
+
+      data_path = game_path / "content/TDQuestion" / str(q.id) / "data.jet"
+      data_path.write_text(
+        json.dumps(q.question_json_data(), indent=2, ensure_ascii=True) + "\n",
+        encoding="utf-8",
+      )
 
     file_path.write_text(
       json.dumps(data, indent=4, ensure_ascii=False) + "\n",
