@@ -1,3 +1,4 @@
+import os
 import json
 from pathlib import Path
 import shutil
@@ -64,8 +65,11 @@ class QuestionStore:
         "x": q.x,
       })
 
-      data_path = game_path / "content/TDQuestion" / str(q.id) / "data.jet"
-      data_path.write_text(
+      # the tiny, seemingly useless data file by the audio tracks
+      data_path = game_path / "content/TDQuestion" / str(q.id)
+      # OBVIOUSLY WE ALSO NEED TO MAKE THE FUCKING FOLDER YOU STUPID FUCK
+      os.makedirs(data_path, exist_ok=True)
+      (data_path / "data.jet").write_text(
         json.dumps(q.question_json_data(), indent=2, ensure_ascii=True) + "\n",
         encoding="utf-8",
       )
